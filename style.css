@@ -1,0 +1,104 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.main-card {
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+    transition: 0.2s;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.main-card:hover {
+    box-shadow: rgba(3, 102, 214, 0.3) 0px 2px 4px, rgba(3, 102, 214, 0.3) 0px 7px 13px -3px, rgba(3, 102, 214, 0.3) 0px -3px 0px inset;
+}
+
+.card-header {
+    width: 100%;
+    text-align: center;
+    background-color: #f0f0f0;
+    border-bottom: none;
+}
+
+.card-title {
+    line-height: 1.5em;
+    height: 3em;       /* height is 2x line-height, so two lines will display */
+    overflow: hidden; 
+}
+
+.image {
+    transition: 0.3s;
+    aspect-ratio: 1/1;
+    object-fit: contain ;
+    mix-blend-mode: darken;
+}
+
+.image:hover {
+    transform: scale(1.1);
+
+}
+
+.card-footer {
+    text-align: center;
+    width: 100%;
+    border: none;
+    background-color: transparent;
+}
+
+.btn {
+    background: #615EFC;
+    color: #fff;
+    font-weight: 600;
+    transition: all 0.4s ease-in-out;
+}
+
+.removeBtn {
+    background-color: transparent;
+    border: 2px solid #615EFC;
+    color: #615EFC;
+}
+
+.btn:hover {
+    color: #fff;
+}
+
+.green {
+    background-color: rgba(0, 128, 0, 0.826);
+}
+
+.green:hover {
+    background-color: green;
+}
+.error {
+    color: Red;
+    font-size: 15px;
+    display: none;
+}
+.show {
+    display: block;
+}
+
+.form-label {
+    font-size: 18px;
+    font-weight: 600;
+}
+/* ---------------- Product Form ---------------- */
+.searchProduct,
+.productForm,
+.productTable {
+    background-color: #f0f0f0;
+}
+
+thead,
+tbody,
+tfoot,
+tr,
+td,
+th {
+    border-style: none;
+}

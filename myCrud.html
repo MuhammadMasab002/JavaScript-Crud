@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- bootstrap cdn link -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- custom style css link -->
+    <link rel="stylesheet" href="style.css">
+    <!-- font-awesome cdn link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"> </script>
+
+    <title>CRUD System using JavaScript</title>
+
+</head>
+
+<body onload="addTableData()">
+    <div class="container">
+        <div class="row productForm py-4 mt-4 justify-content-center align-items-end rounded-2">
+            <div class="col-12">
+                <h1 style="text-align: center;">Admin Panel</h1>
+            </div>
+            <div class="col-lg-7 col-md-10 py-3">
+                <div class="row px-sm-0 px-1 g-3 justify-content-center align-items-end">
+                    <div class="col-sm-10 col-12">
+                        <label for="inputFile" class="form-label">Select Image</label>
+                        <input type="file" class="form-control py-2" id="inputFile">
+                        <span id="fileError" class="error">Please Select File</span>
+                    </div>
+                    <div class="col-sm-10 col-12">
+                        <label for="inputTitle" class="form-label">Enter Title</label>
+                        <input type="text" class="form-control py-2" id="inputTitle">
+                        <span id="titleError" class="error">Please Enter Title</span>
+                    </div>
+                    <div class="col-sm-10 col-12">
+                        <label for="inputPrice" class="form-label">Enter Price</label>
+                        <input type="number" class="form-control py-2" id="inputPrice">
+                        <span id="priceError" class="error">Please Enter Price</span>
+                    </div>
+                    <div class="col-12">
+                        <div class="row align-items-center justify-content-center">
+                            <div class="col-sm-5 col-6">
+                                <div id="mainBtn">
+                                    <button type="submit" class="btn removeBtn btn-primary w-100 py-2 mt-2"
+                                        id="clearBtn">Clear Product</button>
+                                </div>
+                            </div>
+                            <div class="col-sm-5 col-6 mt-sm-0">
+                                <div id="mainBtn">
+                                    <button type="submit" class="btn addBtn btn-primary w-100 py-2 mt-2"
+                                        id="submitBtn">Add Product</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row my-3 py-3 justify-content-center align-items-center searchProduct rounded-2">
+            <div class="col-lg-4 col-md-6 col-sm-7 col-9">
+                <input type="search" class="form-control py-2 w-100" id="searchItem" autocomplete="off"
+                    placeholder="Search Products Here.....">
+            </div>
+        </div>
+
+        <div class="row productTable mb-4 justify-content-center rounded-2">
+            <div class="col-12">
+                <table id="productTable" class="table table-striped table-hover">
+                    <thead>
+                        <tr class="text-center">
+                            <th>#</th>
+                            <th>Title</th>
+                            <th>Price</th>
+                            <th>Image</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody style="border-style: none; background-color: transparent;" id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row my-4 px-sm-0 px-1 g-4 justify-content-center hello" id="productRow"></div>
+    </div>
+
+    <!-- main js file -->
+    <script>
+        let products = JSON.parse(localStorage.getItem('products')) || [
+            { url: 'images/f4.jpg', title: 'Printed White Cotton Men Half T Shirt', price: '129' },
+            { url: 'images/f5.jpg', title: 'Printed Purple Cotton Men Half T Shirt', price: '270' }
+        ];
+
+        let id = '';
+        let path = '';
+
+        $('#inputFile').addEventListener('change', function () {
+            const file = $('#inputFile').files[0];
+            const reader = new FileReader();
+
+            reader.onloadend = function () {
+                path = reader.result;
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        })
+
+        $('#searchItem').addEventListener('input', function () {
+            let inputValue = $('#searchItem').value.toLowerCase().trim();
+            console.log(inputValue);
+
+            if (inputValue == '') {
+                return addTableData(products);
+            } else {
+                let filterProducts = products.filter(function (item) {
+                    return item.title.toLowerCase().includes(inputValue) || item.price.toLowerCase().includes(inputValue);
+                });
+                addTableData(filterProducts);
+            }
+        })
+
+        $('#submitBtn').addEventListener('click', function () {
+
+            let title = $('#inputTitle').value.trim();
+            let price = $('#inputPrice').value.trim();
+            let url = path;
+            let isValid = false;
+
+            let newProduct = {
+                url: url,
+                title: title,
+                price: price
+            }
+
+            if (url == '' && id == '') {
+                $('#fileError').classList.add('show');
+                isValid = true;
+            } else {
+                $('#fileError').classList.remove('show');
+            }
+
+            if (title == '') {
+                $('#titleError').classList.add('show');
+                isValid = true;
+            } else {
+                $('#titleError').classList.remove('show');
+            }
+
+            if (price == '') {
+                $('#priceError').classList.add('show');
+                isValid = true;
+            } else {
+                $('#priceError').classList.remove('show');
+            }
+
+            if (isValid) {
+                return;
+            }
+
+            if (id !== '') {
+                if ($('#inputFile').value == '') {
+                    products[id].title = newProduct.title;
+                    products[id].price = newProduct.price;
+                }
+                else {
+                    products[id] = newProduct;
+                }
+
+                $('#submitBtn').innerText = 'Add Product';
+                $('#submitBtn').classList.remove('green');
+                id = '';
+
+            } else {
+                products.push(newProduct);
+            }
+
+            localStorage.setItem('products', JSON.stringify(products));
+
+            addTableData();
+            clearFormData();
+        })
+
+        function addTableData(filterProducts = products) {
+            let html = ``;
+            let srNo = 1;
+
+            for (const key in filterProducts) {
+                html += `
+                    <tr class="tableRow text-center" style="vertical-align: middle;">
+                        <td>${srNo}</td>
+                        <td>${filterProducts[key].title}</td>
+                        <td>$${filterProducts[key].price}</td>
+                        <td>
+                            <img style="width:100px;" class="img-fluid image" title="${filterProducts[key].title}" src="${filterProducts[key].url}" alt="${filterProducts[key].title}">
+                        </td>
+                        <td>
+                            <button type="button" class="btn bg-success d-md-inline-block d-none" id="editBtn" onclick="editData(${key})">Edit</button>
+                            <button type="button" class="btn bg-danger mt-md-0 mt-1 d-md-inline-block d-none" id="delBtn" onclick="deleteData(${key})">Delete</button>
+
+                            <i class="fa-solid fa-pen btn bg-success d-md-none d-inline-block" id="editBtn" onclick="editData(${key})"></i>
+                            <i class="fa-solid fa-trash btn bg-danger mt-md-0 mt-1 d-md-none d-inline-block" id="delBtn" onclick="deleteData(${key})"></i>
+                        </td>
+                    </tr>
+                `;
+                srNo++;
+            }
+            $('#tableBody').innerHTML = html;
+            addCards(filterProducts);
+        }
+
+        function addCards(filterProducts = products) {
+            let html = '';
+
+            for (const key in filterProducts) {
+                html += `
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+                        <div class="card main-card">
+                            <div class="card-header px-md-4 px-5 py-3">
+                                <img class="img-fluid image card-img-top" title="${filterProducts[key].title}" src="${filterProducts[key].url}" alt="${filterProducts[key].title}">
+                            </div>
+                            <div class="card-body text-center">
+                                <h5 class="card-title">${filterProducts[key].title}</h5>
+                                <p class="card-text">$${filterProducts[key].price}</p>
+                            </div>
+                            <div class="card-footer">
+                                <button type="button" class="addCart btn">ADD TO CART</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            $('#productRow').innerHTML = html;
+        }
+
+        function editData(x) {
+            id = x;
+            $('#inputTitle').value = products[x].title;
+            $('#inputPrice').value = products[x].price;
+            // $('#inputFile').value = products[x].url;
+            $('#submitBtn').innerText = 'Update Products';
+            $('#submitBtn').classList.add('green');
+        }
+
+        function deleteData(x) {
+            products.splice(x, 1);
+            localStorage.setItem('products', JSON.stringify(products));
+            addTableData();
+        }
+
+        $('#clearBtn').addEventListener('click', function () {
+            products = [];
+            localStorage.clear('products', JSON.stringify(products));
+            addTableData();
+        })
+
+        function clearFormData() {
+            $('#inputTitle').value = '';
+            $('#inputPrice').value = '';
+            $('#inputFile').value = '';
+            path = '';
+        }
+
+        function $(getId) {
+            return document.querySelector(getId);
+        }
+    </script>
+
+</body>
+
+</html>
